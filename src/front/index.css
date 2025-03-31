@@ -1,3 +1,7 @@
+body {
+  background-color: #f0f0f09a;
+}
+
 .row {
     display: flex;
     justify-content: center;
@@ -35,3 +39,23 @@
   }
   
   
+  full-width-logo-container {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 2rem 0;
+    background: white;
+    overflow: hidden;
+    position: relative;
+  }
+  .full-width-logo {
+    width: 100%;
+    max-height: 300px; 
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  @media (min-width: 1200px) {
+    .full-width-logo {
+      max-height: 400px; 
+    }
+  }

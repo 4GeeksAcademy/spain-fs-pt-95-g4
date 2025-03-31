@@ -1,0 +1,37 @@
+.row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .col-md-4 {
+    display: flex;
+    justify-content: center;
+  }
+  
+  img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .search-form {
+    width: 300px;
+    position: relative;
+  }
+  
+  .search-input {
+    padding-right: 35px; /* Espacio para la lupa */
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+  }
+  
+  

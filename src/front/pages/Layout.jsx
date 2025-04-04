@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import ScrollToTop from "../components/ScrollToTop";
 import CustomNavbar from "../components/Navbar";
 import { Footer } from "../components/Footer";
-import logo from "../assets/img/logo.jpg";
+import logo from "../assets/img/logo.png";
 
 export const Layout = () => {
   return (

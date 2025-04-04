@@ -10,7 +10,7 @@ const CustomNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavDropdown title="Categorías" id="basic-nav-dropdown">
+            <NavDropdown title="Categories" id="basic-nav-dropdown">
               <NavDropdown.Item href="#misticos">Lugares Místicos</NavDropdown.Item>
               <NavDropdown.Item href="#paranormal">Paranormal</NavDropdown.Item>
               <NavDropdown.Item href="#paises">Países</NavDropdown.Item>
@@ -20,7 +20,7 @@ const CustomNavbar = () => {
           <Form className="d-flex search-form">
   <FormControl
     type="search"
-    placeholder="Buscar..."
+    placeholder="Search..."
     className="me-2 search-input"
     aria-label="Search"
   />
@@ -28,8 +28,8 @@ const CustomNavbar = () => {
 </Form>
 
           <Nav>
-            <Nav.Link href="#login">Iniciar sesión</Nav.Link>
-            <Nav.Link href="#register">Registrarse</Nav.Link>
+            <Nav.Link href="#login">Login</Nav.Link>
+            <Nav.Link href="#register">Register</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

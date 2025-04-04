@@ -22,40 +22,131 @@ body {
   }
 
   .search-form {
-    width: 300px;
+    width: 700px;
     position: relative;
   }
   
   .search-input {
-    padding-right: 35px; 
+    padding-right: 500px; 
   }
   
   .search-icon {
     position: absolute;
-    right: 10px;
+    right: 50px;
     top: 50%;
     transform: translateY(-50%);
-    color: gray;
+    color: rgb(175, 2, 190);
   }
   
   
-  full-width-logo-container {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    padding: 2rem 0;
-    background: white;
-    overflow: hidden;
-    position: relative;
-  }
+.navbar-nav .nav-link {
+  color: #fdfdfd ; 
+}
+
+.navbar-nav .nav-link:hover {
+  color: #d400ff ;
+  font-weight: bold ;
+}
+
+.navbar .form-control::placeholder {
+  color: rgb(175, 2, 190) ;
+}
+
+
+.full-width-logo-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 5rem 0 4rem;
+  background: rgb(0, 0, 0);
+  overflow: hidden;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.full-width-logo {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  transform: scale(1.1);
+  transform-origin: center;
+}
+
+@media (min-width: 1200px) {
   .full-width-logo {
-    width: 100%;
-    max-height: 300px; 
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
+    max-height: 500px;
+    transform: scale(1.15);
   }
-  @media (min-width: 1200px) {
-    .full-width-logo {
-      max-height: 400px; 
-    }
+  .full-width-logo-container {
+    padding: 6rem 0 5rem;
   }
+}
+  
+/*aca voy mirando los estilos para las imagenes agregadas y darle comentarios entre otros*/
+
+
+.image-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: -3px;
+  background: transparent;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+.text-purple {
+  color:  rgb(175, 2, 190); 
+
+}
+.fa-heart {
+  stroke:  rgb(175, 2, 190);
+  stroke-width: 40px;
+  fill: transparent; 
+}
+
+.favorite-btn:hover {
+  transform: scale(1.1);
+  transition: 0.2s;
+}
+
+.comments-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.rounded {
+  border-radius: 8px ;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.border-bottom {
+  border-bottom: 1px solid #eee ;
+}
+
+.input-group-sm {
+  max-width: 300px;
+}

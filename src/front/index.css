@@ -150,3 +150,14 @@ body {
 .input-group-sm {
   max-width: 300px;
 }
+
+.btn-link.text-danger {
+  color: #dc3545; 
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-link.text-danger:hover {
+  opacity: 1;
+  text-decoration: none;
+}

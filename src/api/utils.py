@@ -14,17 +14,10 @@ class APIException(Exception):
         }
 
 def generate_sitemap(app=None):
-    """
-    Genera un mapa del sitio dinámico
-    Args:
-        app (Flask): Instancia de la aplicación Flask (opcional)
-    Returns:
-        Response: JSON con todas las rutas o HTML del sitemap
-    """
+   
     if app is None:
         app = current_app
     
-    # Generar lista de rutas disponibles
     routes = []
     for rule in app.url_map.iter_rules():
         if 'GET' in rule.methods and not rule.rule.startswith(('/static', '/admin')):
@@ -40,8 +33,6 @@ def generate_sitemap(app=None):
         'total_routes': len(routes)
     })
 
-# Funciones adicionales que puedas necesitar
 def get_all_endpoints():
-    """Obtiene todos los endpoints registrados"""
     app = current_app
     return [str(rule) for rule in app.url_map.iter_rules()]

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'tu_clave_secreta_aqui'
+app.config['SECRET_KEY'] = 'Mi_Idolo_Messi_Goat'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lugares.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

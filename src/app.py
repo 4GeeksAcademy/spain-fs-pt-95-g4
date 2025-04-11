@@ -12,15 +12,13 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 
 def create_app():
-    # Configuración inicial
+    
     ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
     static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
     
-    # Crear aplicación Flask
     app = Flask(__name__)
     app.url_map.strict_slashes = False
 
-    # Configuración de la base de datos
     db_url = os.getenv("DATABASE_URL")
     if db_url is not None:
         app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
@@ -29,23 +27,18 @@ def create_app():
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Inicializar extensiones
     db.init_app(app)
     Migrate(app, db, compare_type=True)
 
-    # Configurar admin y comandos
     setup_admin(app)
     setup_commands(app)
 
-    # Registrar blueprints
     app.register_blueprint(api, url_prefix='/api')
 
-    # Manejadores de errores
     @app.errorhandler(APIException)
     def handle_invalid_usage(error):
         return jsonify(error.to_dict()), error.status_code
 
-    # Rutas principales
     @app.route('/')
     def sitemap():
         if ENV == "development":

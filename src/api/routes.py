@@ -4,9 +4,7 @@ from .models import User, Lugar, LugarFavorito, Comentario
 from flask_login import login_user, current_user, logout_user, login_required
 from flask import Blueprint
 
-# Crea este objeto (lo que tu app.py está buscando)
 api = Blueprint('api', __name__)
-
 
 @app.route("/")
 def home():

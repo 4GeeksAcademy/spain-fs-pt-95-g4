@@ -16,8 +16,10 @@ export const Layout = () => {
           className="full-width-logo" 
         />
       </div>
-            
-      <Outlet />
+      
+      <main className="main-content">
+        <Outlet />
+      </main>
 
       <Footer />
     </ScrollToTop>

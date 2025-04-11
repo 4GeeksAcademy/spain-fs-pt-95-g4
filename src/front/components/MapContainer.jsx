@@ -13,7 +13,7 @@ const MapContainer = ({ onLocationSelect, activeLocation, places }) => {
         center: { lat: 40.4168, lng: -3.7038 }, 
         zoom: 12,
         disableDefaultUI: true,
-        //mapTypeId: 'satellite',
+        mapTypeId: 'satellite',
         zoomControl: true
       });
 

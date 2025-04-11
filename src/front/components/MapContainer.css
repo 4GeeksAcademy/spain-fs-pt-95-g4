@@ -5,7 +5,7 @@
   }
   
   .compact-map-view {
-    height: 300px; /* Altura reducida */
+    height: 300px; 
     width: 100%;
     border-radius: 4px;
     border: 1px solid #dee2e6;
@@ -15,7 +15,7 @@
     margin-bottom: 8px;
   }
   
-  /* Estilos para el autocompletado */
+  
   .pac-container {
     font-family: inherit;
     z-index: 1060;
@@ -54,12 +54,11 @@
   margin-bottom: 8px;
 }
 
-/* Estilo para tarjeta activa */
 .image-card.active-location {
   box-shadow: 0 0 0 2px rgb(175, 2, 190);
 }
 
-/* Ajustes para el autocompletado */
+
 .pac-container {
   z-index: 1060 !important;
   border-radius: 0 0 4px 4px;
@@ -94,12 +93,12 @@
     margin-bottom: 8px;
   }
   
-  /* Estilo para tarjeta activa */
+  
   .image-card.active-location {
     box-shadow: 0 0 0 2px rgb(175, 2, 190);
   }
   
-  /* Ajustes para el autocompletado */
+  
   .pac-container {
     z-index: 1060 !important;
     border-radius: 0 0 4px 4px;

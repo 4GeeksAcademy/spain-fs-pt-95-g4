@@ -1,22 +1,35 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import imagesData from "../imagesData.js";
 import { FaRegHeart, FaHeart, FaPaperPlane, FaTrashAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import MapContainer from "../components/MapContainer";
+import { useSearchParams } from "react-router-dom";
 
 export const Home = () => {
+  const [searchParams] = useSearchParams();
   const [images, setImages] = useState(imagesData);
   const [newComments, setNewComments] = useState({});
   const [expandedComments, setExpandedComments] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Preparar lugares para el mapa
+  useEffect(() => {
+    const category = searchParams.get("category");
+    setSelectedCategory(category || null);
+  }, [searchParams]);
+
+  const displayedImages = useMemo(() => {
+    return selectedCategory 
+      ? images.filter(img => img.category === selectedCategory)
+      : images;
+  }, [images, selectedCategory]);
+
   const places = useMemo(() => {
-    return images.map(img => ({
+    return displayedImages.map(img => ({
       ...img,
       active: selectedLocation && img.id === selectedLocation.id
     }));
-  }, [images, selectedLocation]);
+  }, [displayedImages, selectedLocation]);
 
   const toggleFavorite = (id) => {
     setImages(images.map(img =>
@@ -68,10 +81,13 @@ export const Home = () => {
 
   return (
     <div className="container-fluid mt-4">
-      <h1 className="text-center mb-4">Escoge tu lugar</h1>
+      <h1 className="text-center mb-4">
+        {selectedCategory 
+          ? `Categoría: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}` 
+          : "Escoge tu lugar"}
+      </h1>
       
       <div className="row">
-        
         <div className="col-lg-4 col-md-12 mb-4">
           <div className="image-card sticky-top" style={{ top: '20px' }}>
             <h5 className="mb-3">Mapa de ubicaciones</h5>
@@ -85,10 +101,9 @@ export const Home = () => {
           </div>
         </div>
 
-        {/* Columna de Tarjetas */}
         <div className="col-lg-8 col-md-12">
           <div className="row">
-            {images.map((img) => (
+            {displayedImages.map((img) => (
               <div key={img.id} className="col-md-6 col-lg-4 mb-4">
                 <div 
                   className={`image-card h-100 d-flex flex-column position-relative ${selectedLocation?.id === img.id ? 'active-location' : ''}`}
@@ -178,7 +193,7 @@ export const Home = () => {
                         onChange={(e) =>
                           setNewComments({ ...newComments, [img.id]: e.target.value })
                         }
-                        onKeyPress={(e) => e.key === 'Enter' && addComment(img.id)}
+                        onKeyUp={(e) => e.key === 'Enter' && addComment(img.id)}
                       />
                       <button
                         className="btn btn-outline-primary"

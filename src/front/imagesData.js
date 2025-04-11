@@ -7,6 +7,7 @@ const imagesData = [
   {
     id: 1,
     src: "/img/imagen1.jpg",
+    category: "misticos",
     favorite: false,
     location: { lat: 49.9614, lng: 15.2886  },
     name: "Capilla de los huesos Osario de Sedlec, república checa",
@@ -16,6 +17,7 @@ const imagesData = [
     {
     id: 2,
     src: "/img/imagen2.jpg",
+    category: "paranormal",
     favorite: false,
     location: { lat: 46.7706, lng: 23.5222 },
     name: "Bosque de Hoia Baciu,Rumania-Transilvania",
@@ -25,6 +27,7 @@ const imagesData = [
   {
     id: 3,
     src: "/img/imagen3.jpg",
+    category: "paranormal",
     favorite: false,
     location: { lat: 45.3819, lng: 12.3308 },
     name: "La isla de Poveglia, en la laguna de Venecia",
@@ -34,6 +37,7 @@ const imagesData = [
   {
     id: 4,
     src: "/img/imagen4.jpg",
+    category: "misticos",
     favorite: false,
     location: { lat: 2.4167, lng: 36.0167 },
     name: "Lago Natron,Gran Valle del Rift,Africa Oriental,Tanzania",
@@ -43,6 +47,7 @@ const imagesData = [
   {
     id: 5,
     src: "/img/imagen5.jpg",
+    category: "misticos",
     favorite: false,
     location: { lat: 12.4634, lng: 53.8230 },
     name: "Socotra (Yemen)",
@@ -52,6 +57,7 @@ const imagesData = [
   {
     id: 6,
     src: "/img/imagen6.jpg",
+    category: "misticos",
     favorite: false,
     location: { lat: 40.8593, lng: -119.3313 },
     name: "Fly Geyser (Nevada, EE.UU.)",
@@ -61,6 +67,7 @@ const imagesData = [
   {
     id: 7,
     src: "/img/imagen7.jpg",
+    category: "paranormal",
     favorite: false,
     location: { lat: 35.4714, lng: 138.6081 },
     name: "Bosque de Aokigahara,Japón.",
@@ -70,6 +77,7 @@ const imagesData = [
   {
     id: 8,
     src: "/img/imagen8.jpg",
+    category: "paranormal",
     favorite: false,
     location: { lat: 37.3184, lng: -121.9511 },
     name: "La Mansión Winchester (California, EE.UU.)",
@@ -78,7 +86,8 @@ const imagesData = [
   },
   {
     id: 9,
-    src: "/img/imagen9.jpg",   
+    src: "/img/imagen9.jpg",  
+    category: "misticos", 
     favorite: false,
     location: { lat: 36.6821, lng:-117.5694 },
     name: "El Misterio de las Piedras Deslizantes (EE.UU.)",

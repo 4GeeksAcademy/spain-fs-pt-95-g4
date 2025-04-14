@@ -38,6 +38,14 @@ body {
     color: rgb(175, 2, 190);
   }
   
+  .search-icon-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+  }
+  
   
 .navbar-nav .nav-link {
   color: #fdfdfd ; 
@@ -193,3 +201,4 @@ body {
     transform: translateY(0);
   }
 }
+

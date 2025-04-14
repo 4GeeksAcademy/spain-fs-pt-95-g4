@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navbar, Nav, Container, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
 
 const CustomNavbar = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCategorySelect = (category) => {
     navigate(`/?category=${category}`);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -30,15 +40,21 @@ const CustomNavbar = () => {
             </NavDropdown>
           </Nav>
           
-          
-          <Form className="d-flex search-form">
+          <Form className="d-flex search-form" onSubmit={handleSearch}>
             <FormControl
               type="search"
               placeholder="Search..."
               className="me-2 search-input"
               aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Search className="search-icon" />
+            <button 
+              type="submit"
+              className="search-icon-button"
+            >
+              <Search className="search-icon" />
+            </button>
           </Form>
 
           <Nav>

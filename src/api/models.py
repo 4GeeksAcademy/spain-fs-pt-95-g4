@@ -1,14 +1,13 @@
-from datetime import datetime
-from . import db  
-from flask_login import UserMixin
+from src.api.extensions import db
+from flask_sqlalchemy import SQLAlchemy
 
-class User(db.Model, UserMixin):
+db = SQLAlchemy()
+
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    lugares_favoritos = db.relationship('LugarFavorito', backref='usuario', lazy=True)
-    comentarios = db.relationship('Comentario', backref='autor', lazy=True)
 
 class Lugar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +26,6 @@ class LugarFavorito(db.Model):
 class Comentario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contenido = db.Column(db.Text, nullable=False)
-    fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     lugar_id = db.Column(db.Integer, db.ForeignKey('lugar.id'), nullable=False)

@@ -21,7 +21,7 @@ class Lugar(db.Model):
     descripcion = db.Column(db.Text, nullable=False)
     ubicacion = db.Column(db.String(200), nullable=False)
     categoria = db.Column(db.String(50), nullable=False)
-    imagen = db.Column(db.String(200))  # Ruta de la imagen
+    imagen = db.Column(db.String(200))  
     favoritos = db.relationship('LugarFavorito', backref='lugar', lazy=True)
     comentarios = db.relationship('Comentario', backref='lugar', lazy=True)
 

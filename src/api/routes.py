@@ -10,11 +10,11 @@ def home():
     import urllib
     links = []
     for rule in current_app.url_map.iter_rules():
-        # Ignorar endpoints internos de Flask
+    
         if rule.endpoint == 'static':
             continue
 
-        # Construir la URL completa
+        
         url = urllib.parse.unquote(
             f"{request.host_url.rstrip('/')}{rule.rule}")
         methods = ', '.join(rule.methods - {'HEAD', 'OPTIONS'})

@@ -10,7 +10,6 @@ def setup_commands(app):
 
     @app.cli.command("seed-db")
     def seed_db():
-        # Crear usuarios
         user1 = User(username="Pochoclo", email="pochocloi@gmail.com")
         user1.set_password("password1")
         user2 = User(username="Letal", email="Letal@examplemail.com")
@@ -19,7 +18,6 @@ def setup_commands(app):
         db.session.add(user1)
         db.session.add(user2)
 
-        # Crear lugares con rutas de imágenes correctas para Flask
         lugares_muestra = [
             {
                 "nombre": "Capilla de los huesos Osario de Sedlec, república checa",

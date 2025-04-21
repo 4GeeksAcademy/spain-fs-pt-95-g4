@@ -55,7 +55,7 @@ def registro():
         return jsonify({"error": "Faltan datos obligatorios."}), 400
 
     user = User(username=username, email=email)
-    user.set_password(password)  # Cifra la contraseña
+    user.set_password(password)  
     db.session.add(user)
     db.session.commit()
 

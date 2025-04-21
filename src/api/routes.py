@@ -110,6 +110,25 @@ def lugar(lugar_id):
     }
     return jsonify(lugar_serializado)
 
+@routes.route('/lugares/<string:categoria>')
+def lugares_por_categoria(categoria):
+    lugares = Lugar.query.filter_by(categoria=categoria).all()
+    if not lugares:
+        return jsonify({"error": f"No se encontraron lugares en la categoría '{categoria}'"}), 404
+
+    lugares_serializados = [
+        {
+            "id": lugar.id,
+            "nombre": lugar.nombre,
+            "descripcion": lugar.descripcion,
+            "ubicacion": lugar.ubicacion,
+            "categoria": lugar.categoria,
+            "imagen": lugar.imagen
+        }
+        for lugar in lugares
+    ]
+    return jsonify(lugares_serializados)
+
 
 @routes.route('/favorito/<int:lugar_id>', methods=['POST'])
 def favorito(lugar_id):

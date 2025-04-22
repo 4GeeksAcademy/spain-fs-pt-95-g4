@@ -4,23 +4,16 @@ from .models import User, Lugar, LugarFavorito, Comentario
 
 routes = Blueprint('routes', __name__)
 
-
 @routes.route('/')
 def home():
     import urllib
     links = []
     for rule in current_app.url_map.iter_rules():
-    
         if rule.endpoint == 'static':
             continue
-
-        
-        url = urllib.parse.unquote(
-            f"{request.host_url.rstrip('/')}{rule.rule}")
+        url = urllib.parse.unquote(f"{request.host_url.rstrip('/')}{rule.rule}")
         methods = ', '.join(rule.methods - {'HEAD', 'OPTIONS'})
-        links.append({"endpoint": rule.endpoint,
-                     "url": url, "methods": methods})
-
+        links.append({"endpoint": rule.endpoint, "url": url, "methods": methods})
     return jsonify({"endpoints": links})
 
 
@@ -43,42 +36,58 @@ def home_page():
 
 @routes.route('/registro', methods=['POST'])
 def registro():
-    if 'user_id' in session:
-        return jsonify({"message": "Ya estás autenticado."}), 400
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se enviaron datos."}), 400
 
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
 
-    if not username or not email or not password:
-        return jsonify({"error": "Faltan datos obligatorios."}), 400
+        if not username or not email or not password:
+            return jsonify({"error": "Faltan datos obligatorios."}), 400
 
-    user = User(username=username, email=email)
-    user.set_password(password)  
-    db.session.add(user)
-    db.session.commit()
+        # Verifica si el usuario ya existe
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "El correo ya está registrado."}), 400
 
-    return jsonify({"message": "Cuenta creada con éxito."}), 201
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "El nombre de usuario ya está en uso."}), 400
+
+        user = User(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"message": "Cuenta creada con éxito."}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al registrar el usuario: {str(e)}"}), 500
 
 
 @routes.route('/login', methods=['POST'])
 def login():
-    if 'user_id' in session:
-        return jsonify({"message": "Ya estás autenticado."}), 400
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se enviaron datos."}), 400
 
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+        username = data.get('username')
+        password = data.get('password')
 
-    user = User.query.filter_by(username=username).first()
+        if not username or not password:
+            return jsonify({"error": "Faltan datos obligatorios."}), 400
 
-    if user and user.check_password(password):
-        session['user_id'] = user.id
-        session.permanent = True
-        return jsonify({"message": "Inicio de sesión exitoso."}), 200
-    else:
-        return jsonify({"error": "Credenciales incorrectas."}), 401
+        user = User.query.filter_by(username=username).first()
+
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            session.permanent = True
+            return jsonify({"message": "Inicio de sesión exitoso."}), 200
+        else:
+            return jsonify({"error": "Credenciales incorrectas."}), 401
+    except Exception as e:
+        return jsonify({"error": f"Error al iniciar sesión: {str(e)}"}), 500
 
 
 @routes.route('/logout', methods=['POST'])
@@ -110,6 +119,7 @@ def lugar(lugar_id):
     }
     return jsonify(lugar_serializado)
 
+
 @routes.route('/lugares/<string:categoria>')
 def lugares_por_categoria(categoria):
     lugares = Lugar.query.filter_by(categoria=categoria).all()
@@ -136,10 +146,17 @@ def favorito(lugar_id):
         return jsonify({"message": "No autorizado"}), 401
 
     user_id = session['user_id']
-    favorito = LugarFavorito(user_id=user_id, lugar_id=lugar_id)
-    db.session.add(favorito)
-    db.session.commit()
-    return jsonify({"message": "Añadido a favoritos."}), 201
+    if LugarFavorito.query.filter_by(user_id=user_id, lugar_id=lugar_id).first():
+        return jsonify({"message": "El lugar ya está en favoritos."}), 400
+
+    try:
+        favorito = LugarFavorito(user_id=user_id, lugar_id=lugar_id)
+        db.session.add(favorito)
+        db.session.commit()
+        return jsonify({"message": "Añadido a favoritos."}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error al añadir a favoritos."}), 500
 
 
 @routes.route('/comentar/<int:lugar_id>', methods=['POST'])
@@ -153,12 +170,15 @@ def comentar(lugar_id):
     if not contenido:
         return jsonify({"error": "El comentario no puede estar vacío."}), 400
 
-    user_id = session['user_id']
-    comentario = Comentario(contenido=contenido,
-                            user_id=user_id, lugar_id=lugar_id)
-    db.session.add(comentario)
-    db.session.commit()
-    return jsonify({"message": "Comentario publicado con éxito."}), 201
+    try:
+        user_id = session['user_id']
+        comentario = Comentario(contenido=contenido, user_id=user_id, lugar_id=lugar_id)
+        db.session.add(comentario)
+        db.session.commit()
+        return jsonify({"message": "Comentario publicado con éxito."}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error al publicar el comentario."}), 500
 
 
 @routes.route('/sitemap')
@@ -168,11 +188,7 @@ def sitemap():
     for rule in current_app.url_map.iter_rules():
         if rule.endpoint == 'static':
             continue
-
-        url = urllib.parse.unquote(
-            f"{request.host_url.rstrip('/')}{rule.rule}")
+        url = urllib.parse.unquote(f"{request.host_url.rstrip('/')}{rule.rule}")
         methods = ', '.join(rule.methods - {'HEAD', 'OPTIONS'})
-        links.append({"endpoint": rule.endpoint,
-                     "url": url, "methods": methods})
-
+        links.append({"endpoint": rule.endpoint, "url": url, "methods": methods})
     return jsonify({"endpoints": links})

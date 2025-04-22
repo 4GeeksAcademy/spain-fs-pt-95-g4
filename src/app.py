@@ -3,6 +3,7 @@ from datetime import timedelta
 from src.api.extensions import db, migrate
 from src.api.routes import routes
 from src.api.commands import setup_commands
+from flask_cors import CORS  # type: ignore
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +15,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     setup_commands(app)
+
+    CORS(app)
 
     app.register_blueprint(routes)
 

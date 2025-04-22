@@ -23,7 +23,7 @@ const CustomNavbar = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="px-3">
       <Container>
-        <Navbar.Brand href="/">HiddenWorld</Navbar.Brand>
+        <Navbar.Brand onClick={() => navigate("/")}>HiddenWorld</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -39,7 +39,7 @@ const CustomNavbar = () => {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          
+
           <Form className="d-flex search-form" onSubmit={handleSearch}>
             <FormControl
               type="search"
@@ -58,8 +58,8 @@ const CustomNavbar = () => {
           </Form>
 
           <Nav>
-            <Nav.Link href="#login">Login</Nav.Link>
-            <Nav.Link href="#register">Register</Nav.Link>
+            <Nav.Link onClick={() => navigate("/login")}>Login</Nav.Link>
+            <Nav.Link onClick={() => navigate("/register")}>Register</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

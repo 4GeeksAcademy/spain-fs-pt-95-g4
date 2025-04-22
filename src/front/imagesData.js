@@ -17,7 +17,7 @@ const imagesData = [
     {
     id: 2,
     src: "/img/imagen2.jpg",
-    category: "paranormal",
+    category: "naturales",
     favorite: false,
     location: { lat: 46.7706, lng: 23.5222 },
     name: "Bosque de Hoia Baciu,Rumania-Transilvania",
@@ -37,7 +37,7 @@ const imagesData = [
   {
     id: 4,
     src: "/img/imagen4.jpg",
-    category: "misticos",
+    category: "naturales",
     favorite: false,
     location: { lat: 2.4167, lng: 36.0167 },
     name: "Lago Natron,Gran Valle del Rift,Africa Oriental,Tanzania",
@@ -47,7 +47,7 @@ const imagesData = [
   {
     id: 5,
     src: "/img/imagen5.jpg",
-    category: "misticos",
+    category: "naturales",
     favorite: false,
     location: { lat: 12.4634, lng: 53.8230 },
     name: "Socotra (Yemen)",
@@ -57,7 +57,7 @@ const imagesData = [
   {
     id: 6,
     src: "/img/imagen6.jpg",
-    category: "misticos",
+    category: "hechos por el hombre",
     favorite: false,
     location: { lat: 40.8593, lng: -119.3313 },
     name: "Fly Geyser (Nevada, EE.UU.)",
@@ -87,11 +87,41 @@ const imagesData = [
   {
     id: 9,
     src: "/img/imagen9.jpg",  
-    category: "misticos", 
+    category: "misticos",
     favorite: false,
     location: { lat: 36.6821, lng:-117.5694 },
     name: "El Misterio de las Piedras Deslizantes (EE.UU.)",
     description: "El misterio de las piedras deslizantes se da en Racetrack Playa, un lago seco en el Parque Nacional del Valle de la Muerte, California. Se trata de un fenómeno geológico que consiste en el desplazamiento de grandes rocas sin intervención humana o animal. ",
+    comments: []
+  },
+  {
+    id: 10,
+    src: "/img/imagen10.jpg",
+    category: "hechos por el hombre",
+    favorite: false,
+    location: { lat: 37.2233, lng: 38.9224 },
+    name: "Göbekli Tepe (Turquía)",
+    description: "El templo más antiguo del mundo (11,000 años), Göbekli Tepe es el lugar de culto religioso más antiguo del mundo descubierto hasta ahora, Los relieves de los pilares incluyen zorros, leones, jabalíes, asnos salvajes, garzas, patos, escorpiones, hormigas, arañas, muchas serpientes y unas pocas figuras antropomorfas.",
+    comments: []
+  },
+  {
+    id: 11,
+    src: "/img/imagen11.jpg",
+    category: "hechos por el hombre",
+    favorite: false,
+    location: { lat: 27.0980, lng: 76.2869 },
+    name: "Rajgarh Alwar, Bhangarh (India)",
+    description: "La ciudad fantasma más embrujada de Asia.Según la leyenda, un hechizo maldijo este lugar, y hoy está prohibido entrar después del atardecer.",
+    comments: []
+  },
+  {
+    id: 12,
+    src: "/img/imagen12.jpg",
+    category: "hechos por el hombre",
+    favorite: false,
+    location: { lat: 53.6946, lng: 6.4755 },
+    name: "Newgrange (Irlanda)",
+    description: "Tumba prehistórica iluminada solo en el solsticio de invierno.Más antigua que las pirámides, se dice que era un sitio de renacimiento espiritual.Newgrange es conocido por la iluminación de su pasadizo y cámara con el sol del solsticio de invierno . Sobre la entrada del pasadizo de Newgrange hay una abertura llamada caja de techo. ",
     comments: []
   },
   

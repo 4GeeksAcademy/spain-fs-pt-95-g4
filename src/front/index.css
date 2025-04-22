@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Creepster&display=swap');
+
+
 body {
   background-color: #f0f0f09a;
 }
@@ -202,3 +205,75 @@ body {
   }
 }
 
+
+
+.navbar.bg-dark {
+  font-family: 'Cinzel Decorative', cursive;
+  background-color: #1a1a1a;
+  border-bottom: 2px solid #5e0a7e;
+}
+
+
+
+.navbar-dark .navbar-brand {
+  font-family: 'Creepster', cursive;
+  font-size: 2.5rem; 
+  letter-spacing: 2px;
+  color: #d100ff;
+  text-shadow: 0 0 8px rgba(209, 0, 255, 0.7);
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+
+.navbar-dark .navbar-nav .nav-link {
+  font-family: 'Cinzel Decorative', cursive;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #d100ff;
+  text-shadow: 0 0 5px rgba(209, 0, 255, 0.5);
+}
+
+
+.navbar-dark .navbar-nav .nav-dropdown .dropdown-toggle {
+  font-weight: 700;
+  color: #e0e0e0;
+}
+
+.navbar-dark .navbar-nav .dropdown-menu {
+  background-color: #2a2a2a;
+  border: 1px solid #5e0a7e;
+}
+
+.navbar-dark .navbar-nav .dropdown-item {
+  color: #e0e0e0;
+  font-family: 'Cinzel Decorative', cursive;
+  transition: all 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .dropdown-item:hover,
+.navbar-dark .navbar-nav .dropdown-item:focus {
+  background-color: rgba(94, 10, 126, 0.3);
+  color: #ff00ea;
+}
+
+
+.navbar-dark .search-input {
+  background-color: #2a2a2a;
+  border: 1px solid #5e0a7e;
+  color: #e0e0e0;
+}
+
+.navbar-dark .search-input::placeholder {
+  color: #a0a0a0;
+  font-family: 'Cinzel Decorative', cursive;
+}
+
+.navbar-dark .search-icon {
+  color: #d100ff;
+}

@@ -34,8 +34,11 @@ const CustomNavbar = () => {
               <NavDropdown.Item onClick={() => handleCategorySelect("paranormal")}>
                 Paranormal
               </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => handleCategorySelect("paises")}>
-                Países
+              <NavDropdown.Item onClick={() => handleCategorySelect("hechos por el hombre")}>
+                Hechos por el hombre
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => handleCategorySelect("naturales")}>
+                Naturales
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>

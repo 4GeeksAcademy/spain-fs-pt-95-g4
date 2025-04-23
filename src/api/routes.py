@@ -210,10 +210,14 @@ def comentar(lugar_id):
 
     try:
         user_id = session['user_id']
+        user = User.query.get_or_404(user_id)  
         comentario = Comentario(contenido=contenido, user_id=user_id, lugar_id=lugar_id)
         db.session.add(comentario)
         db.session.commit()
-        return jsonify({"message": "Comentario publicado con éxito."}), 201
+        return jsonify({
+            "message": "Comentario publicado con éxito.",
+            "username": user.username  
+        }), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al publicar el comentario."}), 500

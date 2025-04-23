@@ -10,7 +10,7 @@ export const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3001/login", {
+            const response = await fetch("https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),

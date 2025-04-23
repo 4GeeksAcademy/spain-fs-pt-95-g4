@@ -48,7 +48,6 @@ def registro():
         if not username or not email or not password:
             return jsonify({"error": "Faltan datos obligatorios."}), 400
 
-        # Verifica si el usuario ya existe
         if User.query.filter_by(email=email).first():
             return jsonify({"error": "El correo ya está registrado."}), 400
 
@@ -56,9 +55,10 @@ def registro():
             return jsonify({"error": "El nombre de usuario ya está en uso."}), 400
 
         user = User(username=username, email=email)
-        user.set_password(password)
+        user.set_password(password)  
         db.session.add(user)
         db.session.commit()
+
         return jsonify({"message": "Cuenta creada con éxito."}), 201
     except Exception as e:
         db.session.rollback()
@@ -68,6 +68,7 @@ def registro():
 @routes.route('/login', methods=['POST'])
 def login():
     try:
+    
         data = request.get_json()
         if not data:
             return jsonify({"error": "No se enviaron datos."}), 400
@@ -81,12 +82,14 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
+            
             session['user_id'] = user.id
             session.permanent = True
             return jsonify({"message": "Inicio de sesión exitoso."}), 200
         else:
             return jsonify({"error": "Credenciales incorrectas."}), 401
     except Exception as e:
+        
         return jsonify({"error": f"Error al iniciar sesión: {str(e)}"}), 500
 
 

@@ -11,7 +11,7 @@ export const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3001/registro", {
+            const response = await fetch("https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/registro", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),
@@ -19,8 +19,8 @@ export const Register = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                alert(data.message); // Mostrar mensaje de éxito
-                navigate("/login"); // Redirigir al login
+                alert(data.message); 
+                navigate("/login"); 
             } else {
                 const errorData = await response.json();
                 setError(errorData.error);

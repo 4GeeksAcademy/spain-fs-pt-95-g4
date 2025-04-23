@@ -37,3 +37,4 @@ class Comentario(db.Model):
     contenido = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     lugar_id = db.Column(db.Integer, db.ForeignKey('lugar.id'), nullable=False)
+    user = db.relationship('User', backref='comentarios')  

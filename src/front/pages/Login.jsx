@@ -7,7 +7,7 @@ export const Login = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const BASE_URL = "https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev";
+    const BASE_URL = "https://automatic-eureka-4jw9rpwgq6j5hq954-3001.app.github.dev/";
 
     const handleSubmit = async (e) => {
         e.preventDefault();

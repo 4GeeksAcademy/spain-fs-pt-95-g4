@@ -1,5 +1,3 @@
-// Import necessary components and functions from react-router-dom.
-
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -22,8 +20,14 @@ export const router = createBrowserRouter(
       <Route path="/demo" element={<Demo />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/perfil" element={<Perfil />} /> {/* https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/perfil */}
-<Route path="/editar-perfil" element={<EditarPerfil />} /> {/* https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/editar-perfil */}
+      <Route
+        path="/perfil"
+        element={<Perfil backendUrl="https://automatic-eureka-4jw9rpwgq6j5hq954-3001.app.github.dev/perfil" />}
+      />
+      <Route
+        path="/editar-perfil"
+        element={<EditarPerfil backendUrl="https://automatic-eureka-4jw9rpwgq6j5hq4j-3001.app.github.dev/editar-perfil" />}
+      />
     </Route>
   )
 );

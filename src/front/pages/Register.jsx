@@ -24,7 +24,7 @@ export const Register = () => {
         }
     
         try {
-            const response = await fetch("https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/registro", {
+            const response = await fetch("https://automatic-eureka-4jw9rpwgq6j5hq954-3001.app.github.dev//registro", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),

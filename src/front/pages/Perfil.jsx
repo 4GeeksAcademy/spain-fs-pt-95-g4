@@ -7,7 +7,7 @@ export const Perfil = () => {
     useEffect(() => {
         const fetchPerfil = async () => {
             try {
-                const response = await fetch("https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/perfil", {
+                const response = await fetch("https://automatic-eureka-4jw9rpwgq6j5hq954-3001.app.github.dev//perfil", {
                     method: "GET",
                     credentials: "include", // Para incluir cookies de sesión
                 });

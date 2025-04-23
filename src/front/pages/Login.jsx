@@ -7,32 +7,47 @@ export const Login = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const BASE_URL = "https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev";
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/login", {
+            const response = await fetch(`${BASE_URL}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include", 
                 body: JSON.stringify({ username, password }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                alert(data.message); // Mostrar mensaje de éxito
-                navigate("/"); // Redirigir al home
+                alert(data.message); 
+                setUsername(""); 
+                setPassword(""); 
+                navigate("/"); 
             } else {
                 const errorData = await response.json();
-                setError(errorData.error);
+                setError(errorData.error || "Error al iniciar sesión.");
             }
         } catch (err) {
-            setError("Error al conectar con el servidor.");
+            setError(err.message || "Error al conectar con el servidor.");
         }
     };
 
     return (
         <div className="container mt-5">
             <h1>Login</h1>
-            {error && <div className="alert alert-danger">{error}</div>}
+            {error && (
+                <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                    {error}
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={() => setError(null)}
+                    ></button>
+                </div>
+            )}
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="username" className="form-label">Username</label>

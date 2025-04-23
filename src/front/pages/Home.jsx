@@ -59,7 +59,7 @@ export const Home = () => {
       setImages(images.map(img =>
         img.id === id ? {
           ...img,
-          comments: [...img.comments, newComments[id]]
+          comments: [...img.comments, { username: "UsuarioActual", contenido: newComments[id] }]
         } : img
       ));
       setNewComments({ ...newComments, [id]: "" });
@@ -183,7 +183,9 @@ export const Home = () => {
                                 key={index}
                                 className="d-flex justify-content-between align-items-center small mb-1"
                               >
-                                <span>• {comment}</span>
+                                <span>
+                                  <strong>{comment.username}:</strong> {comment.contenido}
+                                </span>
                                 <button
                                   className="btn btn-link text-danger btn-sm p-0 delete-icon"
                                   onClick={(e) => {

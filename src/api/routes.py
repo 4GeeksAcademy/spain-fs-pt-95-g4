@@ -91,6 +91,40 @@ def login():
     except Exception as e:
         
         return jsonify({"error": f"Error al iniciar sesión: {str(e)}"}), 500
+    
+@routes.route('/perfil', methods=['GET'])
+def perfil():
+    if 'user_id' not in session:
+        return jsonify({"error": "No autorizado"}), 401
+
+    user_id = session['user_id']
+    user = User.query.get_or_404(user_id)
+
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+    }), 200
+
+@routes.route('/perfil', methods=['PUT'])
+def editar_perfil():
+    if 'user_id' not in session:
+        return jsonify({"error": "No autorizado"}), 401
+
+    user_id = session['user_id']
+    user = User.query.get_or_404(user_id)
+
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+
+    if username:
+        user.username = username
+    if email:
+        user.email = email
+
+    db.session.commit()
+    return jsonify({"message": "Perfil actualizado con éxito."}), 200
 
 
 @routes.route('/logout', methods=['POST'])
@@ -108,6 +142,7 @@ def lugar(lugar_id):
             "id": comentario.id,
             "contenido": comentario.contenido,
             "user_id": comentario.user_id,
+            "username": comentario.user.username,  
             "lugar_id": comentario.lugar_id
         }
         for comentario in comentarios

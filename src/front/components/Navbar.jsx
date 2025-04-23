@@ -58,6 +58,8 @@ const CustomNavbar = () => {
           </Form>
 
           <Nav>
+            <Nav.Link onClick={() => navigate("/perfil")}>Perfil</Nav.Link>
+            <Nav.Link onClick={() => navigate("/editar-perfil")}>Editar Perfil</Nav.Link>
             <Nav.Link onClick={() => navigate("/login")}>Login</Nav.Link>
             <Nav.Link onClick={() => navigate("/register")}>Register</Nav.Link>
           </Nav>

@@ -4,23 +4,16 @@ from .models import User, Lugar, LugarFavorito, Comentario
 
 routes = Blueprint('routes', __name__)
 
-
 @routes.route('/')
 def home():
     import urllib
     links = []
     for rule in current_app.url_map.iter_rules():
-    
         if rule.endpoint == 'static':
             continue
-
-        
-        url = urllib.parse.unquote(
-            f"{request.host_url.rstrip('/')}{rule.rule}")
+        url = urllib.parse.unquote(f"{request.host_url.rstrip('/')}{rule.rule}")
         methods = ', '.join(rule.methods - {'HEAD', 'OPTIONS'})
-        links.append({"endpoint": rule.endpoint,
-                     "url": url, "methods": methods})
-
+        links.append({"endpoint": rule.endpoint, "url": url, "methods": methods})
     return jsonify({"endpoints": links})
 
 
@@ -43,49 +36,113 @@ def home_page():
 
 @routes.route('/registro', methods=['POST'])
 def registro():
-    if 'user_id' in session:
-        return jsonify({"message": "Ya estás autenticado."}), 400
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se enviaron datos."}), 400
 
-    data = request.get_json()
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
 
-    if not username or not email or not password:
-        return jsonify({"error": "Faltan datos obligatorios."}), 400
+        if not username or not email or not password:
+            return jsonify({"error": "Faltan datos obligatorios."}), 400
 
-    user = User(username=username, email=email)
-    user.set_password(password)  
-    db.session.add(user)
-    db.session.commit()
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "El correo ya está registrado."}), 400
 
-    return jsonify({"message": "Cuenta creada con éxito."}), 201
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "El nombre de usuario ya está en uso."}), 400
+
+        user = User(username=username, email=email)
+        user.set_password(password)  
+        db.session.add(user)
+        db.session.commit()
+
+        return jsonify({"message": "Cuenta creada con éxito."}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Error al registrar el usuario: {str(e)}"}), 500
 
 
 @routes.route('/login', methods=['POST'])
 def login():
-    if 'user_id' in session:
-        return jsonify({"message": "Ya estás autenticado."}), 400
+    try:
+    
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se enviaron datos."}), 400
+
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            return jsonify({"error": "Faltan datos obligatorios."}), 400
+
+        user = User.query.filter_by(username=username).first()
+
+        if user and user.check_password(password):
+            
+            session['user_id'] = user.id
+            session.permanent = True
+            return jsonify({"message": "Inicio de sesión exitoso."}), 200
+        else:
+            return jsonify({"error": "Credenciales incorrectas."}), 401
+    except Exception as e:
+        
+        return jsonify({"error": f"Error al iniciar sesión: {str(e)}"}), 500
+    
+@routes.route('/perfil', methods=['GET'])
+def perfil():
+    if 'user_id' not in session:
+        return jsonify({"error": "No autorizado"}), 401
+
+    user_id = session['user_id']
+    user = User.query.get_or_404(user_id)
+
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+    }), 200
+
+@routes.route('/perfil', methods=['PUT'])
+def editar_perfil():
+    if 'user_id' not in session:
+        return jsonify({"error": "No autenticado"}), 401
+
+    user_id = session['user_id']
+    user = User.query.get_or_404(user_id)
 
     data = request.get_json()
     username = data.get('username')
-    password = data.get('password')
+    email = data.get('email')
+    descripcion = data.get('descripcion')
+    foto = data.get('foto')
 
-    user = User.query.filter_by(username=username).first()
+    if username:
+        user.username = username
+    if email:
+        user.email = email
+    if descripcion is not None:
+        user.descripcion = descripcion
+    if foto is not None:
+        user.foto = foto
 
-    if user and user.check_password(password):
-        session['user_id'] = user.id
-        session.permanent = True
-        return jsonify({"message": "Inicio de sesión exitoso."}), 200
-    else:
-        return jsonify({"error": "Credenciales incorrectas."}), 401
+    db.session.commit()
 
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "descripcion": user.descripcion,
+        "foto": user.foto
+    })
 
 @routes.route('/logout', methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({"message": "Sesión cerrada con éxito."})
-
 
 @routes.route('/lugar/<int:lugar_id>')
 def lugar(lugar_id):
@@ -96,6 +153,7 @@ def lugar(lugar_id):
             "id": comentario.id,
             "contenido": comentario.contenido,
             "user_id": comentario.user_id,
+            "username": comentario.user.username,  
             "lugar_id": comentario.lugar_id
         }
         for comentario in comentarios
@@ -128,7 +186,25 @@ def lugares_por_categoria(categoria):
         for lugar in lugares
     ]
     return jsonify(lugares_serializados)
+@routes.route('/lugares/pais/<string:pais>')
+def lugares_por_pais(pais):
+    lugares = Lugar.query.filter_by(pais=pais).all()
+    if not lugares:
+        return jsonify({"message": "No se encontraron lugares para ese país."}), 404
 
+    lugares_serializados = [
+        {
+            "id": lugar.id,
+            "nombre": lugar.nombre,
+            "descripcion": lugar.descripcion,
+            "ubicacion": lugar.ubicacion,
+            "categoria": lugar.categoria,
+            "pais": lugar.pais,
+            "imagen": lugar.imagen
+        }
+        for lugar in lugares
+    ]
+    return jsonify(lugares_serializados)
 
 @routes.route('/favorito/<int:lugar_id>', methods=['POST'])
 def favorito(lugar_id):
@@ -136,11 +212,17 @@ def favorito(lugar_id):
         return jsonify({"message": "No autorizado"}), 401
 
     user_id = session['user_id']
-    favorito = LugarFavorito(user_id=user_id, lugar_id=lugar_id)
-    db.session.add(favorito)
-    db.session.commit()
-    return jsonify({"message": "Añadido a favoritos."}), 201
+    if LugarFavorito.query.filter_by(user_id=user_id, lugar_id=lugar_id).first():
+        return jsonify({"message": "El lugar ya está en favoritos."}), 400
 
+    try:
+        favorito = LugarFavorito(user_id=user_id, lugar_id=lugar_id)
+        db.session.add(favorito)
+        db.session.commit()
+        return jsonify({"message": "Añadido a favoritos."}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error al añadir a favoritos."}), 500
 
 @routes.route('/comentar/<int:lugar_id>', methods=['POST'])
 def comentar(lugar_id):
@@ -153,13 +235,19 @@ def comentar(lugar_id):
     if not contenido:
         return jsonify({"error": "El comentario no puede estar vacío."}), 400
 
-    user_id = session['user_id']
-    comentario = Comentario(contenido=contenido,
-                            user_id=user_id, lugar_id=lugar_id)
-    db.session.add(comentario)
-    db.session.commit()
-    return jsonify({"message": "Comentario publicado con éxito."}), 201
-
+    try:
+        user_id = session['user_id']
+        user = User.query.get_or_404(user_id)  
+        comentario = Comentario(contenido=contenido, user_id=user_id, lugar_id=lugar_id)
+        db.session.add(comentario)
+        db.session.commit()
+        return jsonify({
+            "message": "Comentario publicado con éxito.",
+            "username": user.username  
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error al publicar el comentario."}), 500
 
 @routes.route('/sitemap')
 def sitemap():
@@ -168,11 +256,7 @@ def sitemap():
     for rule in current_app.url_map.iter_rules():
         if rule.endpoint == 'static':
             continue
-
-        url = urllib.parse.unquote(
-            f"{request.host_url.rstrip('/')}{rule.rule}")
+        url = urllib.parse.unquote(f"{request.host_url.rstrip('/')}{rule.rule}")
         methods = ', '.join(rule.methods - {'HEAD', 'OPTIONS'})
-        links.append({"endpoint": rule.endpoint,
-                     "url": url, "methods": methods})
-
+        links.append({"endpoint": rule.endpoint, "url": url, "methods": methods})
     return jsonify({"endpoints": links})

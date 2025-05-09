@@ -223,6 +223,29 @@ def favorito(lugar_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al añadir a favoritos."}), 500
+    
+    @routes.route('/mis-favoritos', methods=['GET'])
+def mis_favoritos():
+    if 'user_id' not in session:
+        return jsonify({"message": "No autorizado"}), 401
+
+    user_id = session['user_id']
+    favoritos = LugarFavorito.query.filter_by(user_id=user_id).all()
+    lugares = [Lugar.query.get(fav.lugar_id) for fav in favoritos]
+
+    lugares_serializados = [
+        {
+            "id": lugar.id,
+            "nombre": lugar.nombre,
+            "descripcion": lugar.descripcion,
+            "ubicacion": lugar.ubicacion,
+            "categoria": lugar.categoria,
+            "pais": lugar.pais,
+            "imagen": lugar.imagen
+        }
+        for lugar in lugares if lugar
+    ]
+    return jsonify(lugares_serializados)
 
 @routes.route('/comentar/<int:lugar_id>', methods=['POST'])
 def comentar(lugar_id):

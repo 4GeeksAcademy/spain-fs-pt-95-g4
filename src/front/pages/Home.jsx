@@ -12,21 +12,44 @@ export const Home = () => {
   const [expandedComments, setExpandedComments] = useState({});
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    setImages(prevImages => 
+      prevImages.map(img => ({
+        ...img,
+        favorite: savedFavorites.includes(img.id)
+      }))
+    );
+  }, []);
+
+  
   useEffect(() => {
     const category = searchParams.get("category");
+    const country = searchParams.get("country");
     const search = searchParams.get("search");
     
     setSelectedCategory(category || null);
+    setSelectedCountry(country || null);
     setSearchQuery(search || "");
   }, [searchParams]);
 
+ 
   const displayedImages = useMemo(() => {
-    let filteredImages = images;
+    let filteredImages = [...images];
     
     if (selectedCategory) {
       filteredImages = filteredImages.filter(img => img.category === selectedCategory);
+    }
+    
+    if (selectedCountry) {
+      filteredImages = filteredImages.filter(img => {
+        const imgCountry = img.country?.toLowerCase() || "";
+        return imgCountry.includes(selectedCountry.toLowerCase());
+      });
     }
     
     if (searchQuery) {
@@ -39,7 +62,7 @@ export const Home = () => {
     }
     
     return filteredImages;
-  }, [images, selectedCategory, searchQuery]);
+  }, [images, selectedCategory, selectedCountry, searchQuery]);
 
   const places = useMemo(() => {
     return displayedImages.map(img => ({
@@ -48,12 +71,21 @@ export const Home = () => {
     }));
   }, [displayedImages, selectedLocation]);
 
+ 
   const toggleFavorite = (id) => {
-    setImages(images.map(img =>
+    const updatedImages = images.map(img => 
       img.id === id ? { ...img, favorite: !img.favorite } : img
-    ));
+    );
+    
+    const favorites = updatedImages
+      .filter(img => img.favorite)
+      .map(img => img.id);
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    setImages(updatedImages);
   };
 
+ 
   const addComment = (id) => {
     if (newComments[id]?.trim()) {
       setImages(images.map(img =>
@@ -101,6 +133,8 @@ export const Home = () => {
       <h1 className="text-center mb-4">
         {selectedCategory 
           ? `Categoría: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}` 
+          : selectedCountry
+          ? `País: ${selectedCountry.charAt(0).toUpperCase() + selectedCountry.slice(1)}`
           : searchQuery
           ? `Resultados para: "${searchQuery}"`
           : "Escoge tu lugar"}
@@ -129,8 +163,10 @@ export const Home = () => {
                     className={`image-card h-100 d-flex flex-column position-relative ${selectedLocation?.id === img.id ? 'active-location' : ''}`}
                     onClick={() => handleImageClick(img)}
                   >
+                   
                     <button
-                      className="favorite-btn"
+                      className="favorite-btn position-absolute"
+                      style={{ top: '10px', right: '10px', zIndex: 1 }}
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(img.id);
@@ -159,6 +195,7 @@ export const Home = () => {
                       {img.description || "Descripción no disponible"}
                     </p>
 
+                  
                     <div className="comments-section mt-auto">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <h6 className="text-uppercase text-muted small mb-0">

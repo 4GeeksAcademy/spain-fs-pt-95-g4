@@ -109,7 +109,7 @@ def perfil():
 @routes.route('/perfil', methods=['PUT'])
 def editar_perfil():
     if 'user_id' not in session:
-        return jsonify({"error": "No autenticado"}), 401
+        return jsonify({"error": "No autorizado"}), 401
 
     user_id = session['user_id']
     user = User.query.get_or_404(user_id)
@@ -117,27 +117,26 @@ def editar_perfil():
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
-    descripcion = data.get('descripcion')
-    foto = data.get('foto')
+    descripcion = data.get('descripcion')  
+    foto = data.get('foto')              
 
     if username:
         user.username = username
     if email:
         user.email = email
-    if descripcion is not None:
+    if descripcion is not None:           
         user.descripcion = descripcion
-    if foto is not None:
+    if foto is not None:                 
         user.foto = foto
 
     db.session.commit()
-
     return jsonify({
         "id": user.id,
         "username": user.username,
         "email": user.email,
-        "descripcion": user.descripcion,
-        "foto": user.foto
-    })
+        "descripcion": user.descripcion,  
+        "foto": user.foto                
+    }), 200
 
 @routes.route('/logout', methods=['POST'])
 def logout():
@@ -167,6 +166,7 @@ def lugar(lugar_id):
         "comentarios": comentarios_serializados
     }
     return jsonify(lugar_serializado)
+
 
 @routes.route('/lugares/<string:categoria>')
 def lugares_por_categoria(categoria):
@@ -223,8 +223,7 @@ def favorito(lugar_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al añadir a favoritos."}), 500
-    
-    @routes.route('/mis-favoritos', methods=['GET'])
+@routes.route('/mis-favoritos', methods=['GET'])
 def mis_favoritos():
     if 'user_id' not in session:
         return jsonify({"message": "No autorizado"}), 401

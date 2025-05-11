@@ -54,15 +54,32 @@ export const Home = () => {
     ));
   };
 
-  const addComment = (id) => {
+  const addComment = async (id) => {
     if (newComments[id]?.trim()) {
-      setImages(images.map(img =>
-        img.id === id ? {
-          ...img,
-          comments: [...img.comments, newComments[id]]
-        } : img
-      ));
-      setNewComments({ ...newComments, [id]: "" });
+      try {
+        const response = await fetch(`https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/comentar/${id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // Incluir cookies de sesión
+          body: JSON.stringify({ comentario: newComments[id] }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setImages(images.map(img =>
+            img.id === id ? {
+              ...img,
+              comments: [...img.comments, { username: data.username, contenido: newComments[id] }]
+            } : img
+          ));
+          setNewComments({ ...newComments, [id]: "" });
+        } else {
+          const errorData = await response.json();
+          alert(errorData.error || "Error al agregar el comentario.");
+        }
+      } catch (err) {
+        alert("Error al conectar con el servidor.");
+      }
     }
   };
 
@@ -183,7 +200,9 @@ export const Home = () => {
                                 key={index}
                                 className="d-flex justify-content-between align-items-center small mb-1"
                               >
-                                <span>• {comment}</span>
+                                <span>
+                                  <strong>{comment.username}:</strong> {comment.contenido}
+                                </span>
                                 <button
                                   className="btn btn-link text-danger btn-sm p-0 delete-icon"
                                   onClick={(e) => {

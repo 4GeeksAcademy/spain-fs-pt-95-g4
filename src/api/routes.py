@@ -117,21 +117,31 @@ def editar_perfil():
     data = request.get_json()
     username = data.get('username')
     email = data.get('email')
+    descripcion = data.get('descripcion')  
+    foto = data.get('foto')              
 
     if username:
         user.username = username
     if email:
         user.email = email
+    if descripcion is not None:           
+        user.descripcion = descripcion
+    if foto is not None:                 
+        user.foto = foto
 
     db.session.commit()
-    return jsonify({"message": "Perfil actualizado con éxito."}), 200
-
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "descripcion": user.descripcion,  
+        "foto": user.foto                
+    }), 200
 
 @routes.route('/logout', methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({"message": "Sesión cerrada con éxito."})
-
 
 @routes.route('/lugar/<int:lugar_id>')
 def lugar(lugar_id):
@@ -176,7 +186,25 @@ def lugares_por_categoria(categoria):
         for lugar in lugares
     ]
     return jsonify(lugares_serializados)
+@routes.route('/lugares/pais/<string:pais>')
+def lugares_por_pais(pais):
+    lugares = Lugar.query.filter_by(pais=pais).all()
+    if not lugares:
+        return jsonify({"message": "No se encontraron lugares para ese país."}), 404
 
+    lugares_serializados = [
+        {
+            "id": lugar.id,
+            "nombre": lugar.nombre,
+            "descripcion": lugar.descripcion,
+            "ubicacion": lugar.ubicacion,
+            "categoria": lugar.categoria,
+            "pais": lugar.pais,
+            "imagen": lugar.imagen
+        }
+        for lugar in lugares
+    ]
+    return jsonify(lugares_serializados)
 
 @routes.route('/favorito/<int:lugar_id>', methods=['POST'])
 def favorito(lugar_id):
@@ -195,7 +223,28 @@ def favorito(lugar_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al añadir a favoritos."}), 500
+@routes.route('/mis-favoritos', methods=['GET'])
+def mis_favoritos():
+    if 'user_id' not in session:
+        return jsonify({"message": "No autorizado"}), 401
 
+    user_id = session['user_id']
+    favoritos = LugarFavorito.query.filter_by(user_id=user_id).all()
+    lugares = [Lugar.query.get(fav.lugar_id) for fav in favoritos]
+
+    lugares_serializados = [
+        {
+            "id": lugar.id,
+            "nombre": lugar.nombre,
+            "descripcion": lugar.descripcion,
+            "ubicacion": lugar.ubicacion,
+            "categoria": lugar.categoria,
+            "pais": lugar.pais,
+            "imagen": lugar.imagen
+        }
+        for lugar in lugares if lugar
+    ]
+    return jsonify(lugares_serializados)
 
 @routes.route('/comentar/<int:lugar_id>', methods=['POST'])
 def comentar(lugar_id):
@@ -221,7 +270,6 @@ def comentar(lugar_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Error al publicar el comentario."}), 500
-
 
 @routes.route('/sitemap')
 def sitemap():

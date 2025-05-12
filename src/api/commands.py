@@ -81,6 +81,27 @@ def setup_commands(app):
                 "ubicacion": "36.6821, -117.5694",
                 "categoria": "naturaleza",
                 "imagen": "/static/img/imagen9.jpg"
+            },
+            {
+                "nombre": "Göbekli Tepe (Turquía)",
+                "descripcion": "El templo más antiguo del mundo (11,000 años), Göbekli Tepe es el lugar de culto religioso más antiguo del mundo descubierto hasta ahora. Los relieves de los pilares incluyen zorros, leones, jabalíes, asnos salvajes, garzas, patos, escorpiones, hormigas, arañas, muchas serpientes y unas pocas figuras antropomorfas.",
+                "ubicacion": "37.2233, 38.9224",
+                "categoria": "hechos por el hombre",
+                "imagen": "/static/img/imagen10.jpg"
+            },
+            {
+                "nombre": "Rajgarh Alwar, Bhangarh (India)",
+                "descripcion": "La ciudad fantasma más embrujada de Asia. Según la leyenda, un hechizo maldijo este lugar, y hoy está prohibido entrar después del atardecer.",
+                "ubicacion": "27.0980, 76.2869",
+                "categoria": "hechos por el hombre",
+                "imagen": "/static/img/imagen11.jpg"
+            },
+            {
+                "nombre": "Newgrange (Irlanda)",
+                "descripcion": "Tumba prehistórica iluminada solo en el solsticio de invierno. Más antigua que las pirámides, se dice que era un sitio de renacimiento espiritual. Newgrange es conocido por la iluminación de su pasadizo y cámara con el sol del solsticio de invierno. Sobre la entrada del pasadizo de Newgrange hay una abertura llamada caja de techo.",
+                "ubicacion": "53.6946, 6.4755",
+                "categoria": "hechos por el hombre",
+                "imagen": "/static/img/imagen12.jpg"
             }
         ]
 

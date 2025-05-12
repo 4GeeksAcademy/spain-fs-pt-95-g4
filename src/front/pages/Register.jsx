@@ -25,7 +25,7 @@ const Register = () => {
     setLoading(true);
     setError('');
 
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       setLoading(false);
@@ -56,7 +56,7 @@ const Register = () => {
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
 
-     
+        
         const userData = {
           id: newUser.id,
           nombre: newUser.nombre,

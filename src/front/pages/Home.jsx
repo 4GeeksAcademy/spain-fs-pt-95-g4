@@ -15,10 +15,10 @@ export const Home = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  
+
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    setImages(prevImages => 
+    setImages(prevImages =>
       prevImages.map(img => ({
         ...img,
         favorite: savedFavorites.includes(img.id)
@@ -26,41 +26,41 @@ export const Home = () => {
     );
   }, []);
 
-  
+
   useEffect(() => {
     const category = searchParams.get("category");
     const country = searchParams.get("country");
     const search = searchParams.get("search");
-    
+
     setSelectedCategory(category || null);
     setSelectedCountry(country || null);
     setSearchQuery(search || "");
   }, [searchParams]);
 
- 
+
   const displayedImages = useMemo(() => {
     let filteredImages = [...images];
-    
+
     if (selectedCategory) {
       filteredImages = filteredImages.filter(img => img.category === selectedCategory);
     }
-    
+
     if (selectedCountry) {
       filteredImages = filteredImages.filter(img => {
         const imgCountry = img.country?.toLowerCase() || "";
         return imgCountry.includes(selectedCountry.toLowerCase());
       });
     }
-    
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filteredImages = filteredImages.filter(img => 
+      filteredImages = filteredImages.filter(img =>
         img.name.toLowerCase().includes(query) ||
         img.description.toLowerCase().includes(query) ||
         img.category.toLowerCase().includes(query)
       );
     }
-    
+
     return filteredImages;
   }, [images, selectedCategory, selectedCountry, searchQuery]);
 
@@ -71,30 +71,46 @@ export const Home = () => {
     }));
   }, [displayedImages, selectedLocation]);
 
- 
+
   const toggleFavorite = (id) => {
-    const updatedImages = images.map(img => 
+    const updatedImages = images.map(img =>
       img.id === id ? { ...img, favorite: !img.favorite } : img
     );
-    
+
     const favorites = updatedImages
       .filter(img => img.favorite)
       .map(img => img.id);
-    
+
     localStorage.setItem('favorites', JSON.stringify(favorites));
     setImages(updatedImages);
   };
 
- 
-  const addComment = (id) => {
+  const addComment = async (id) => {
     if (newComments[id]?.trim()) {
-      setImages(images.map(img =>
-        img.id === id ? {
-          ...img,
-          comments: [...img.comments, newComments[id]]
-        } : img
-      ));
-      setNewComments({ ...newComments, [id]: "" });
+      try {
+        const response = await fetch(`https://bug-free-trout-7vp4xjpr74q6hq4j-3001.app.github.dev/comentar/${id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // Incluir cookies de sesión
+          body: JSON.stringify({ comentario: newComments[id] }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setImages(images.map(img =>
+            img.id === id ? {
+              ...img,
+              comments: [...img.comments, { username: data.username, contenido: newComments[id] }]
+            } : img
+          ));
+          setNewComments({ ...newComments, [id]: "" });
+        } else {
+          const errorData = await response.json();
+          alert(errorData.error || "Error al agregar el comentario.");
+        }
+      } catch (err) {
+        alert("Error al conectar con el servidor.");
+      }
     }
   };
 
@@ -131,21 +147,21 @@ export const Home = () => {
   return (
     <div className="container-fluid mt-4">
       <h1 className="text-center mb-4">
-        {selectedCategory 
-          ? `Categoría: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}` 
+        {selectedCategory
+          ? `Categoría: ${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}`
           : selectedCountry
-          ? `País: ${selectedCountry.charAt(0).toUpperCase() + selectedCountry.slice(1)}`
-          : searchQuery
-          ? `Resultados para: "${searchQuery}"`
-          : "Escoge tu lugar"}
+            ? `País: ${selectedCountry.charAt(0).toUpperCase() + selectedCountry.slice(1)}`
+            : searchQuery
+              ? `Resultados para: "${searchQuery}"`
+              : "Escoge tu lugar"}
       </h1>
-      
+
       <div className="row">
         <div className="col-lg-4 col-md-12 mb-4">
           <div className="image-card sticky-top" style={{ top: '20px' }}>
             <h5 className="mb-3">Mapa de ubicaciones</h5>
             <div style={{ height: '400px' }}>
-              <MapContainer 
+              <MapContainer
                 onLocationSelect={handleLocationSelect}
                 activeLocation={selectedLocation?.location}
                 places={places}
@@ -159,11 +175,11 @@ export const Home = () => {
             {displayedImages.length > 0 ? (
               displayedImages.map((img) => (
                 <div key={img.id} className="col-md-6 col-lg-4 mb-4">
-                  <div 
+                  <div
                     className={`image-card h-100 d-flex flex-column position-relative ${selectedLocation?.id === img.id ? 'active-location' : ''}`}
                     onClick={() => handleImageClick(img)}
                   >
-                   
+
                     <button
                       className="favorite-btn position-absolute"
                       style={{ top: '10px', right: '10px', zIndex: 1 }}
@@ -195,7 +211,7 @@ export const Home = () => {
                       {img.description || "Descripción no disponible"}
                     </p>
 
-                  
+
                     <div className="comments-section mt-auto">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <h6 className="text-uppercase text-muted small mb-0">
@@ -220,7 +236,9 @@ export const Home = () => {
                                 key={index}
                                 className="d-flex justify-content-between align-items-center small mb-1"
                               >
-                                <span>• {comment}</span>
+                                <span>
+                                  <strong>{comment.username}:</strong> {comment.contenido}
+                                </span>
                                 <button
                                   className="btn btn-link text-danger btn-sm p-0 delete-icon"
                                   onClick={(e) => {
@@ -238,7 +256,7 @@ export const Home = () => {
                         </div>
                       )}
 
-                      <div 
+                      <div
                         className="input-group input-group-sm"
                         onClick={(e) => e.stopPropagation()}
                       >

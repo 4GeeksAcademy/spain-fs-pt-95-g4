@@ -1,76 +1,120 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { Container, Card, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaSignInAlt, FaArrowLeft } from 'react-icons/fa';
 
-export const Login = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
+const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-    const BASE_URL = "https://automatic-eureka-4jw9rpwgq6j5hq954-3001.app.github.dev/";
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch(`${BASE_URL}/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include", 
-                body: JSON.stringify({ username, password }),
-            });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message); 
-                setUsername(""); 
-                setPassword(""); 
-                navigate("/"); 
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || "Error al iniciar sesión.");
-            }
-        } catch (err) {
-            setError(err.message || "Error al conectar con el servidor.");
+
+    setTimeout(() => {
+      try {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.email === formData.email && u.password === formData.password);
+        
+        if (user) {
+          const userData = {
+            id: user.id,
+            nombre: user.nombre,
+            email: user.email,
+            foto: user.foto || '',
+            descripcion: user.descripcion || ''
+          };
+          localStorage.setItem('userData', JSON.stringify(userData));
+          navigate('/perfil');
+        } else {
+          setError('Credenciales incorrectas');
         }
-    };
+      } catch (err) {
+        setError('Error al iniciar sesión');
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
+  };
 
-    return (
-        <div className="container mt-5">
-            <h1>Login</h1>
-            {error && (
-                <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                    {error}
-                    <button
-                        type="button"
-                        className="btn-close"
-                        aria-label="Close"
-                        onClick={() => setError(null)}
-                    ></button>
-                </div>
-            )}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="username" className="form-label">Username</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Login</button>
-            </form>
-        </div>
-    );
+  return (
+    <Container className="py-4">
+      <Button 
+        variant="outline-secondary" 
+        onClick={() => navigate(-1)} 
+        className="mb-4"
+      >
+        <FaArrowLeft className="me-2" /> Volver
+      </Button>
+
+      <Card className="shadow-sm mx-auto" style={{ maxWidth: '500px' }}>
+        <Card.Body>
+          <h3 className="text-center mb-4">
+            <FaSignInAlt className="me-2" /> Iniciar Sesión
+          </h3>
+
+          {error && <Alert variant="danger">{error}</Alert>}
+
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label>Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                minLength="6"
+              />
+            </Form.Group>
+
+            <Button 
+              variant="primary" 
+              type="submit" 
+              className="w-100 mb-3"
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner animation="border" size="sm" className="me-2" />
+              ) : (
+                <FaSignInAlt className="me-2" />
+              )}
+              Iniciar Sesión
+            </Button>
+
+            <div className="text-center">
+              <small className="text-muted">
+                ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
+              </small>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
+  );
 };
+
+export default Login;
